@@ -1,0 +1,6 @@
+INSERT INTO routes(start_location_id, stop_location_id)
+VALUES
+	(1, 11),
+	(11, 17),
+	(1, 24),
+	(17, 24)

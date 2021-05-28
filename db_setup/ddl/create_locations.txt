@@ -1,0 +1,15 @@
+CREATE TABLE locations (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(50) UNIQUE NOT NULL,
+	zone_id int NOT NULL,
+	FOREIGN KEY (zone_id) REFERENCES zones(id) 
+)
+
+CREATE TABLE locations (
+	id INT PRIMARY KEY IDENTITY(1,1),
+	name VARCHAR(50) UNIQUE NOT NULL,
+	zone_id int NOT NULL,
+	INDEX zone_id(zone_id),
+	FOREIGN KEY (zone_id) REFERENCES zones(id)
+		ON DELETE CASCADE
+)

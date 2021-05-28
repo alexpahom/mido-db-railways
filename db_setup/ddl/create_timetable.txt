@@ -1,0 +1,27 @@
+CREATE TABLE timetable (
+	id SERIAL PRIMARY KEY,
+	route_id INT NOT NULL,
+	departure_time TIME WITHOUT time zone NOT NULL,
+	departure_location_id INT NOT NULL,
+	days VARCHAR(30) NOT NULL,
+	FOREIGN KEY (route_id)
+		REFERENCES routes(id),
+	FOREIGN KEY (departure_location_id)
+		REFERENCES locations(id),
+	CHECK (days IN ('Будни', 'Выходные', 'Ежедневно'))
+)
+
+CREATE TABLE timetable (
+	id int PRIMARY KEY IDENTITY(1,1),
+	route_id INT NOT NULL,
+	departure_minutes int NOT NULL,
+	departure_location_id INT NOT NULL,
+	days VARCHAR(30) NOT NULL,
+	INDEX route_id(route_id),
+	INDEX departure_location_id(departure_location_id),
+	FOREIGN KEY (route_id)
+		REFERENCES routes(id) ON DELETE CASCADE,
+	FOREIGN KEY (departure_location_id)
+		REFERENCES locations(id) ON DELETE CASCADE,
+	CHECK (days IN ('Будни', 'Выходные', 'Ежедневно'))
+)

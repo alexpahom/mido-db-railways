@@ -1,0 +1,63 @@
+
+-------------- SHOW ALL ROUTES ---------------------------------
+
+CREATE OR ALTER PROCEDURE getAllRoutes @route_id int=NULL, @interval VARCHAR(50)=NULL
+AS
+WITH all_routes AS (
+	SELECT	a.name AS departure,
+			b.name AS arrival,
+			t.departure_minutes,
+			(t.departure_minutes + s.minutes_from_departure) AS arrival_minutes,
+			t.days,
+			r.id AS route_id,
+			t.id AS timetable_id
+	FROM routes r
+	LEFT JOIN locations a ON a.id = r.start_location_id
+	LEFT JOIN locations b ON b.id = r.stop_location_id
+	LEFT JOIN stops s ON s.location_id = r.stop_location_id
+	JOIN timetable t ON t.route_id = r.id
+	WHERE s.route_id = r.id
+)
+SELECT * INTO #sometable FROM all_routes;
+IF (@route_id IS NOT NULL AND @interval IS NOT NULL)
+	SELECT * FROM #sometable
+	WHERE route_id = @route_id
+	AND days = @interval
+ELSE IF (@interval IS NOT NULL)
+	SELECT * FROM #sometable
+	WHERE days = @interval
+ELSE IF (@route_id IS NOT NULL)
+	SELECT * FROM #sometable
+	WHERE route_id = @route_id
+ELSE
+	SELECT * FROM #sometable
+	
+-------------------------------------------------------------------
+
+------------------------ SHOW ROUTE STATIONS WITH PRICE -----------------------------
+CREATE OR ALTER PROCEDURE getTimeTable @route_id int, @timetable_id int
+AS
+DECLARE @offset int
+SET @offset = (
+	SELECT departure_minutes FROM timetable WHERE id = @timetable_id
+);
+WITH result AS (
+	SELECT	l.name,
+			SUM(z.price) OVER(ORDER BY position) AS price,
+			(s.minutes_from_departure + @offset) AS travel_time,
+			s.position
+	FROM locations l
+	INNER JOIN stops s ON s.location_id = l.id
+	INNER JOIN zones z ON z.id = l.zone_id
+	WHERE s.id IN (
+		SELECT location_id FROM stops s
+		INNER JOIN routes r
+		ON r.id = s.route_id
+		WHERE r.route_id = @route_id
+	)
+)
+SELECT name, travel_time, CONCAT(price, ' руб.') AS price
+FROM result
+ORDER BY position
+	
+	-------------------------------------------------------------------------

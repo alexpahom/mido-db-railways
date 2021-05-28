@@ -1,0 +1,21 @@
+CREATE TABLE routes (
+	id SERIAL PRIMARY KEY,
+	start_location_id int NOT NULL,
+	stop_location_id int NOT NULL,
+	FOREIGN KEY (start_location_id)
+		REFERENCES locations(id),
+	FOREIGN KEY (stop_location_id)
+		REFERENCES locations(id)
+)
+
+CREATE TABLE routes (
+	id INT PRIMARY KEY IDENTITY(1,1),
+	start_location_id int NOT NULL,
+	stop_location_id int NOT NULL,
+	INDEX start_location_id(start_location_id),
+	INDEX stop_location_id(stop_location_id),
+	FOREIGN KEY (start_location_id)
+		REFERENCES locations(id) ON DELETE CASCADE,
+	FOREIGN KEY (stop_location_id)
+		REFERENCES locations(id) ON DELETE CASCADE
+)

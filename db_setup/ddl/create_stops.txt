@@ -1,0 +1,25 @@
+CREATE TABLE stops (
+	id SERIAL PRIMARY KEY,
+	location_id int NOT NULL,
+	route_id int NOT NULL,
+	position int NOT NULL,
+	time_from_departure TIMESTAMP NOT NULL,
+	FOREIGN KEY (location_id)
+		REFERENCES locations(id),
+	FOREIGN KEY (route_id)
+		REFERENCES routes(id)
+)
+
+CREATE TABLE stops (
+	id int PRIMARY KEY IDENTITY(1,1),
+	location_id int NOT NULL,
+	route_id int NOT NULL,
+	position int NOT NULL,
+	minutes_from_departure int NOT NULL,
+	INDEX route_id(route_id),
+	INDEX location_id(location_id),
+	FOREIGN KEY (location_id)
+		REFERENCES locations(id) ON DELETE CASCADE,
+	FOREIGN KEY (route_id)
+		REFERENCES routes(id) ON DELETE CASCADE
+)
