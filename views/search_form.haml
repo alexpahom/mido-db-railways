@@ -1,0 +1,18 @@
+#search-container
+  #sticky-search
+    %form{ id: 'search-form', action: '/search', method: 'get' }
+      .form-group
+        %label{ for: 'routes' } Маршрут
+        %select{ name: 'route_id', class: 'form-control', id: 'routes' }
+          %option{ value: 'NULL' } Выберите маршрут
+          - Railway.route_details.each do |route|
+            %option{ value: route[:route_id] } #{route[:departure]} - #{route[:arrival]}
+      .form-group
+        %label{ for: 'days' } Дни Курсирования
+        %select{ name: 'days', class: 'form-control', id: 'days' }
+          %option{ value: 'NULL' } Выберите дни
+          - Railway.days.each do |day|
+            %option{ value: day }= day
+      .form-group
+        %a{ href: '/', type: 'button', class: 'btn btn-secondary' } Сброс
+        %button{ type: 'submit', class: 'btn btn-primary', value: 'submit' } Поиск
